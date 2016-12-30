@@ -15,7 +15,8 @@ int starty = 0;
 int x = 30, y = 28;
 int przeciwnikX, przeciwnikY;
 int punkty = 0;
-int iloscPrzeciwnikow = 500;
+int iloscPrzeciwnikow = 300;
+int iloscWrogow = iloscPrzeciwnikow; //Dla statystyki w funkcji strzelaj, bez wplywu na zmienna iloscPrzeciwnikow.
 int tymczasowaPozcjaY[500];
 int tymczasowaPozcjaX[500];
 
@@ -182,10 +183,10 @@ void oknoGry()
 				strzelaj(y, x);
 				break;
 			}
-			mvprintw((y / 2) + 7, 92, "%c", x);
+		//	mvprintw((y / 2) + 7, 92, "%c", x);
 			
-			mvprintw((y / 2) + 10, 92, "statekY = %d", y);
-			mvprintw((y / 2) + 11, 92, "statekX = %d", x);
+		//	mvprintw((y / 2) + 10, 92, "statekY = %d", y);
+		//	mvprintw((y / 2) + 11, 92, "statekX = %d", x);
 			wrefresh(gra);
 			
 		}
@@ -221,6 +222,8 @@ void oknoPomocy()
 	mvprintw((y / 2) + 1, przesuniecie_tekstu, "D - prawo");
 	mvprintw((y / 2) + 2, przesuniecie_tekstu, "S - strzal");
 	mvprintw((y / 2)+3, przesuniecie_tekstu, "Q - wyjscie");
+	//mvprintw((y / 2) + 6, 92, "Punkty: %i", punkty);
+	//mvprintw((y / 2) + 5, 92, "Wrogowie: %i", iloscWrogow);
 	
 	
 	refresh();
@@ -238,15 +241,16 @@ int strzelaj(int y, int x)
 		refresh();
 		strzalY--;
 		mvprintw(strzalY, strzalX, "|");
-		Sleep(25);
+		Sleep(15);
 		mvprintw(strzalY+1, strzalX, " ");
 		mvprintw(y, x, "^");
-		mvprintw((y / 2) + 8, 92, "strzalY = %d", y);
-		mvprintw((y / 2) + 9, 92, "strzalX = %d", x);
+		//mvprintw((y / 2) + 8, 92, "strzalY = %d", y);
+		//mvprintw((y / 2) + 9, 92, "strzalX = %d", x);
 		//Petla spradza czy nastapilo trafenie, jezeli tak, to dodaje punkty.
 		for (int j=0; j < iloscPrzeciwnikow; j++) {
 			if (tymczasowaPozcjaX[j] == strzalX && tymczasowaPozcjaY[j] == strzalY) {
 				punkty++;
+				iloscWrogow-=1;
 				tymczasowaPozcjaX[j] = 501; // Zmiana koordynatow zeby petla nie naliczala podwojnego trafienia.
 				tymczasowaPozcjaY[j] = 502; // Zmiana koordynatow zeby petla nie naliczala podwojnego trafienia.
 			}
@@ -255,7 +259,8 @@ int strzelaj(int y, int x)
 				
 		}
 			
-		mvprintw((y / 2) + 6, 92, "Punkty: %d", punkty);
+		mvprintw(29, 58, "|Punkty: %i", punkty);
+		mvprintw(29, 71, "Wrogowie: %i|", iloscWrogow);
 	}
 	mvprintw(strzalY, strzalX, " ");
 	return 1;
@@ -265,14 +270,14 @@ void generujBanana()
 {
 	
 
-	for (int i = 0; i < iloscPrzeciwnikow; i++)
+	for (int i = 0; i <= iloscPrzeciwnikow; i++)
 	{
 		refresh();
 		tymczasowaPozcjaY[i] = przeciwnikY = ((std::rand() % 24) + 2);
 		tymczasowaPozcjaX[i] = przeciwnikX = ((std::rand() % 80) + 2);
 		mvprintw(przeciwnikY, przeciwnikX, "B");
-		mvprintw((y / 2) + 10, 92, "PrzeciwnikX %d", przeciwnikX);
-		mvprintw((y / 2) + 11, 92, "PrzeciwnikY %d", przeciwnikY);
+		//mvprintw((y / 2) + 10, 92, "PrzeciwnikX %d", przeciwnikX);
+		//mvprintw((y / 2) + 11, 92, "PrzeciwnikY %d", przeciwnikY);
 		Sleep(10);
 		
 	}
