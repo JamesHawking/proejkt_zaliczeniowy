@@ -15,7 +15,7 @@ int starty = 0;
 int x = 30, y = 28;
 int przeciwnikX, przeciwnikY;
 int punkty = 0;
-int iloscPrzeciwnikow = 300;
+int iloscPrzeciwnikow = 1;
 int iloscWrogow = iloscPrzeciwnikow; //Dla statystyki w funkcji strzelaj, bez wplywu na zmienna iloscPrzeciwnikow.
 int tymczasowaPozcjaY[500];
 int tymczasowaPozcjaX[500];
@@ -23,7 +23,7 @@ int tymczasowaPozcjaX[500];
 
 char *choices[] = {
 	"Start gry",
-	"Instrukcja",
+	"Instrukcja (nie zrobiona)",
 	"Wyjscie",
 };
 int n_choices = sizeof(choices) / sizeof(char *);
@@ -51,7 +51,7 @@ void menu()
 	int highlight = 1;
 	int choice = 0;
 	int c;
-
+	int przesuniecie_tekstu = 65;
 	initscr();
 	clear();
 	noecho();
@@ -61,7 +61,22 @@ void menu()
 
 	menu_win = newwin(HEIGHT, WIDTH, starty, startx);
 	keypad(menu_win, TRUE);
+	start_color();
+	attron(A_BOLD);
+	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+	attron(COLOR_PAIR(2));
 	mvprintw(22, 10, "Uzyj strzalek by podswietlic wybor, zatwierdz enterem.");
+	mvprintw((y / 2) - 13, przesuniecie_tekstu, "     ____                           ___");
+	mvprintw((y / 2) - 12, przesuniecie_tekstu, "    |  _ \  ___              _   _.' _ `.");
+	mvprintw((y / 2) - 11, przesuniecie_tekstu, " _  | [_) )' _ `._   _  ___ ! \ | | (_) |    _");
+	mvprintw((y / 2) - 10, przesuniecie_tekstu, "|:;.|  _ <| (_) | \ | |' _ `|  \| |  _  |  .:;|");
+	mvprintw((y / 2) - 9, przesuniecie_tekstu, "|   `.[_) )  _  |  \| | (_) |     | | | |.',..|");
+	mvprintw((y / 2) - 8, przesuniecie_tekstu, " :.   `. /| | | |     |  _  | |\  | | |.' :;:: ");
+	mvprintw((y / 2) - 7, przesuniecie_tekstu, "!::;       :; : !.!.\_!_!_!.!- '-':; : ''    '''!");
+	mvprintw((y / 2) - 6, przesuniecie_tekstu, "';:'        `::;::;'             ''     .,  .");
+	mvprintw((y / 2) - 5, przesuniecie_tekstu, "  `:     .,.    `'    .::... .      .::;::;'");
+	mvprintw((y / 2) - 4, przesuniecie_tekstu, "     `..:;::;:..      ::;::;:;:;,    :;::;'");
+	mvprintw((y / 2) - 3, przesuniecie_tekstu, "         - :; ::; :; : ':;::;:''     ;.-'");
 	refresh();
 	print_menu(menu_win, highlight);
 	while (1)
@@ -124,6 +139,7 @@ void oknoGry()
 		keypad(gra, TRUE);
 		box(gra, 0, 0);
 		attron(COLOR_PAIR(2));
+		attron(A_BOLD);
 		mvprintw(0, 1, "|Gwiezdny dezintegrator bananow|");
 		mvprintw(y, x, "^");
 		wrefresh(gra);
@@ -146,6 +162,9 @@ void oknoGry()
 				x--;
 				if (x > 9)
 				{
+					attron(A_BOLD);
+					init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
+					attron(COLOR_PAIR(2));
 					mvprintw(y, x, "^");
 					mvprintw(y, x + 1, " ");
 				}
@@ -171,6 +190,9 @@ void oknoGry()
 				x++;
 				if (x < 'Y')
 				{
+				attron(A_BOLD);
+				init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
+				attron(COLOR_PAIR(2));
 				mvprintw(y, x, "^");
 				mvprintw(y, x - 1, " ");
 				}
@@ -210,13 +232,17 @@ void oknoPomocy()
 	refresh();
 	//pomoc = newwin(92, 120, 0, 0);
 	//box(pomoc, 0, 0);
-	mvprintw((y / 2) - 10, przesuniecie_tekstu, "     .-.");
-	mvprintw((y / 2) - 9, przesuniecie_tekstu, "    /  |");
-	mvprintw((y / 2) - 8, przesuniecie_tekstu, "    |  /");
-	mvprintw((y / 2) - 7, przesuniecie_tekstu, " .'\|.-; _");
-	mvprintw((y / 2) - 6, przesuniecie_tekstu, "/.-.;\  |\|");
-	mvprintw((y / 2) - 5, przesuniecie_tekstu, " '  |'._/ `");
-	mvprintw((y / 2) - 3, przesuniecie_tekstu, "    \  |");
+	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
+	attron(COLOR_PAIR(1));
+	attron(A_BOLD);
+	mvprintw((y / 2) - 10, przesuniecie_tekstu, "   /\\   ");
+	mvprintw((y / 2) - 9, przesuniecie_tekstu, "  (  )  ");
+	mvprintw((y / 2) - 8, przesuniecie_tekstu, "  (  )  ");
+	mvprintw((y / 2) - 7, przesuniecie_tekstu, " /|  |\\ ");
+	mvprintw((y / 2) - 6, przesuniecie_tekstu, "/_||||_\\ ");
+
+	attroff(A_BOLD);
+	attroff(COLOR_PAIR(1));
 	mvprintw((y/2)-1, przesuniecie_tekstu, "Pomoc:");
 	mvprintw(y/2, przesuniecie_tekstu, "A - lewo");
 	mvprintw((y / 2) + 1, przesuniecie_tekstu, "D - prawo");
@@ -235,32 +261,38 @@ void oknoPomocy()
 
 int strzelaj(int y, int x)
 {
-	
+	int wysokoscStrzalu = y - 1;
 	int strzalY = y, strzalX = x;
-	for (int i=0; i < y-1; i++) {
+	for (int i=0; i < wysokoscStrzalu; i++) 
+	{
 		refresh();
 		strzalY--;
 		mvprintw(strzalY, strzalX, "|");
-		Sleep(15);
+		Sleep(50);
 		mvprintw(strzalY+1, strzalX, " ");
 		mvprintw(y, x, "^");
 		//mvprintw((y / 2) + 8, 92, "strzalY = %d", y);
 		//mvprintw((y / 2) + 9, 92, "strzalX = %d", x);
 		//Petla spradza czy nastapilo trafenie, jezeli tak, to dodaje punkty.
-		for (int j=0; j < iloscPrzeciwnikow; j++) {
-			if (tymczasowaPozcjaX[j] == strzalX && tymczasowaPozcjaY[j] == strzalY) {
+		for (int j=0; j < iloscPrzeciwnikow; j++) 
+		{
+			if (tymczasowaPozcjaX[j] == strzalX && tymczasowaPozcjaY[j] == strzalY)
+			{
 				punkty++;
 				iloscWrogow-=1;
+				wysokoscStrzalu = 0;
 				tymczasowaPozcjaX[j] = 501; // Zmiana koordynatow zeby petla nie naliczala podwojnego trafienia.
 				tymczasowaPozcjaY[j] = 502; // Zmiana koordynatow zeby petla nie naliczala podwojnego trafienia.
 			}
-				
 			
-				
 		}
-			
+		
+
 		mvprintw(29, 58, "|Punkty: %i", punkty);
 		mvprintw(29, 71, "Wrogowie: %i|", iloscWrogow);
+
+		if (iloscWrogow == 0)
+			mvprintw(15, 30, "WYGRANA");
 	}
 	mvprintw(strzalY, strzalX, " ");
 	return 1;
@@ -273,8 +305,12 @@ void generujBanana()
 	for (int i = 0; i <= iloscPrzeciwnikow; i++)
 	{
 		refresh();
+		start_color();
+		init_pair(1, COLOR_YELLOW, COLOR_BLACK);
 		tymczasowaPozcjaY[i] = przeciwnikY = ((std::rand() % 24) + 2);
-		tymczasowaPozcjaX[i] = przeciwnikX = ((std::rand() % 80) + 2);
+		tymczasowaPozcjaX[i] = przeciwnikX = ((std::rand() % 70) + 11);
+		attron(COLOR_PAIR(1));
+		attron(A_BOLD);
 		mvprintw(przeciwnikY, przeciwnikX, "B");
 		//mvprintw((y / 2) + 10, 92, "PrzeciwnikX %d", przeciwnikX);
 		//mvprintw((y / 2) + 11, 92, "PrzeciwnikY %d", przeciwnikY);
