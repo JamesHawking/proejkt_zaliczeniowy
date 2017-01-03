@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <windows.h>
 #include <ctime>
+#include <fstream>
+#include <iostream>
 #define WIDTH 30
 #define HEIGHT 10 
 
@@ -33,10 +35,8 @@ void oknoGry();
 void oknoPomocy();
 int strzelaj(int y, int x);
 void generujBanana();
-void detekcjaKolizji();
-void sterowanie();
-void input();
-void logic();
+void wygrana();
+
 
 int main()
 {
@@ -210,7 +210,7 @@ void oknoGry()
 		//	mvprintw((y / 2) + 10, 92, "statekY = %d", y);
 		//	mvprintw((y / 2) + 11, 92, "statekX = %d", x);
 			wrefresh(gra);
-			
+			wygrana();
 		}
 		
 		delwin(gra);
@@ -230,8 +230,9 @@ void oknoPomocy()
 
 	clear();
 	refresh();
-	//pomoc = newwin(92, 120, 0, 0);
+	//pomoc = newwin(0, 100, 0, 0);
 	//box(pomoc, 0, 0);
+	refresh();
 	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
 	attron(COLOR_PAIR(1));
 	attron(A_BOLD);
@@ -258,17 +259,16 @@ void oknoPomocy()
 
 
 }
-
 int strzelaj(int y, int x)
 {
 	int wysokoscStrzalu = y - 1;
 	int strzalY = y, strzalX = x;
-	for (int i=0; i < wysokoscStrzalu; i++) 
+	for (int i=1; i < wysokoscStrzalu; i++) 
 	{
 		refresh();
 		strzalY--;
 		mvprintw(strzalY, strzalX, "|");
-		Sleep(50);
+		Sleep(30);
 		mvprintw(strzalY+1, strzalX, " ");
 		mvprintw(y, x, "^");
 		//mvprintw((y / 2) + 8, 92, "strzalY = %d", y);
@@ -279,7 +279,7 @@ int strzelaj(int y, int x)
 			if (tymczasowaPozcjaX[j] == strzalX && tymczasowaPozcjaY[j] == strzalY)
 			{
 				punkty++;
-				iloscWrogow-=1;
+				iloscWrogow -=1;
 				wysokoscStrzalu = 0;
 				tymczasowaPozcjaX[j] = 501; // Zmiana koordynatow zeby petla nie naliczala podwojnego trafienia.
 				tymczasowaPozcjaY[j] = 502; // Zmiana koordynatow zeby petla nie naliczala podwojnego trafienia.
@@ -291,18 +291,17 @@ int strzelaj(int y, int x)
 		mvprintw(29, 58, "|Punkty: %i", punkty);
 		mvprintw(29, 71, "Wrogowie: %i|", iloscWrogow);
 
-		if (iloscWrogow == 0)
-			mvprintw(15, 30, "WYGRANA");
+		//if (iloscWrogow == 0)
+			//mvprintw(15, 30, "WYGRANA");
 	}
 	mvprintw(strzalY, strzalX, " ");
 	return 1;
 }
-
 void generujBanana()
 {
 	
 
-	for (int i = 0; i <= iloscPrzeciwnikow; i++)
+	for (int i = 0; i <= iloscPrzeciwnikow-1; i++) //-1 poniewaz petla leci od 0
 	{
 		refresh();
 		start_color();
@@ -320,21 +319,28 @@ void generujBanana()
 	
 	
 }
-
-
-
-void detekcjaKolizji()
+void generujBossa()
 {
+	std::fstream boss;
+	boss.open("boss.txt");
 
-	
+	int getnstr(char *str, int n);
 
-
+	//while (std::getline(plik, wiersz))
+		mvprintw(przeciwnikY, przeciwnikX, "B");
 
 }
-
-void logic()
+void wygrana() 
 {
-	
+	if (iloscWrogow == 0)
+	{
+		mvprintw(15, 35, "WYGRANA !!!");
+		Sleep(30);
+		mvprintw(16, 35, "Wcisnij Q by wyjsc z gry.");
+		refresh;
+	}
+		
+
 
 
 }
