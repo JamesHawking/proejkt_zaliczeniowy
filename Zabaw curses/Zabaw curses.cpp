@@ -1,4 +1,4 @@
-// Zabaw curses.cpp : Defines the entry point for the console application.
+﻿// Zabaw curses.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -8,7 +8,9 @@
 #include <windows.h>
 #include <ctime>
 #include <fstream>
-#include <iostream>
+#include <string>
+#include <sstream>
+
 #define WIDTH 30
 #define HEIGHT 10 
 
@@ -17,7 +19,7 @@ int starty = 0;
 int x = 30, y = 28;
 int przeciwnikX, przeciwnikY;
 int punkty = 0;
-int iloscPrzeciwnikow = 1;
+int iloscPrzeciwnikow = 250;
 int iloscWrogow = iloscPrzeciwnikow; //Dla statystyki w funkcji strzelaj, bez wplywu na zmienna iloscPrzeciwnikow.
 int tymczasowaPozcjaY[500];
 int tymczasowaPozcjaX[500];
@@ -36,7 +38,8 @@ void oknoPomocy();
 int strzelaj(int y, int x);
 void generujBanana();
 void wygrana();
-
+void generujBossa();
+void animujBanana();
 
 int main()
 {
@@ -121,6 +124,7 @@ void menu()
 	endwin();
 
 }
+
 void oknoGry() 
 {
 		WINDOW *gra;
@@ -129,8 +133,8 @@ void oknoGry()
 		curs_set(0);
 		start_color();
 		clear();
-		refresh();
 		oknoPomocy();
+		refresh();
 		gra = newwin(0,90,0,0);
 		init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
 		wbkgd(gra, COLOR_PAIR(2));
@@ -143,8 +147,10 @@ void oknoGry()
 		mvprintw(0, 1, "|Gwiezdny dezintegrator bananow|");
 		mvprintw(y, x, "^");
 		wrefresh(gra);
+
 		//Generowanie Bananow!
 		generujBanana();
+
 	//Glowna petla, wyjscie po wcisnieciu q.
 		while ((ch=getch()) != 'q')
 		{
@@ -172,12 +178,7 @@ void oknoGry()
 					x++;
 				}
 				
-
-				//mvwaddch(gra, y, x, 'O');
-				//move(y, x);
-				
-
-	
+				animujBanana();
 				break;
 			//case 's':
 			//case 'S':
@@ -199,24 +200,28 @@ void oknoGry()
 				else {
 					x--;
 				}
+				animujBanana();
 				break;
 			case 'S':
 			case 's':
 				strzelaj(y, x);
+				//animujBanana();
 				break;
 			}
-		//	mvprintw((y / 2) + 7, 92, "%c", x);
 			
+		//mvprintw((y / 2) + 7, 92, "%i", x);	
 		//	mvprintw((y / 2) + 10, 92, "statekY = %d", y);
 		//	mvprintw((y / 2) + 11, 92, "statekX = %d", x);
-			wrefresh(gra);
+			
 			wygrana();
+			wrefresh(gra);
 		}
 		
 		delwin(gra);
 
 		endwin();
 }
+
 void oknoPomocy()
 {
 	WINDOW *pomoc;
@@ -224,15 +229,12 @@ void oknoPomocy()
 	initscr();
 	curs_set(0);
 	start_color();
-
-	
-	int przesuniecie_tekstu = 92;
-
+	int przesuniecie_tekstu = 100;
 	clear();
 	refresh();
-	//pomoc = newwin(0, 100, 0, 0);
-	//box(pomoc, 0, 0);
-	refresh();
+	pomoc = newwin(0, 0, 0, 90);
+	box(pomoc, 0, 0);
+	wrefresh(pomoc);
 	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
 	attron(COLOR_PAIR(1));
 	attron(A_BOLD);
@@ -259,6 +261,7 @@ void oknoPomocy()
 
 
 }
+
 int strzelaj(int y, int x)
 {
 	int wysokoscStrzalu = y - 1;
@@ -297,6 +300,7 @@ int strzelaj(int y, int x)
 	mvprintw(strzalY, strzalX, " ");
 	return 1;
 }
+
 void generujBanana()
 {
 	
@@ -319,21 +323,65 @@ void generujBanana()
 	
 	
 }
+
+void animujBanana()
+{
+
+	int animujY= 0, animujX= 0;
+	start_color();
+	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
+	attron(COLOR_PAIR(1));
+	for (int i = 0; i <= iloscPrzeciwnikow - 1; i++)
+	{
+		if ((x % 2 == 0)) {
+			mvprintw(tymczasowaPozcjaY[i], tymczasowaPozcjaX[i], " ");
+			tymczasowaPozcjaX[i] = tymczasowaPozcjaX[i]++;
+			mvprintw(tymczasowaPozcjaY[i], tymczasowaPozcjaX[i], "B");
+		}
+		else {
+			mvprintw(tymczasowaPozcjaY[i], tymczasowaPozcjaX[i], " ");
+			tymczasowaPozcjaX[i] = tymczasowaPozcjaX[i]--;
+			mvprintw(tymczasowaPozcjaY[i], tymczasowaPozcjaX[i], "B");
+		}
+
+
+			if (x > 87)
+				break;
+			
+	
+		//mvprintw(tymczasowaPozcjaY[i], tymczasowaPozcjaX[i], " ");
+		//refresh();
+	}
+	
+		
+}
+
 void generujBossa()
 {
 	std::fstream boss;
 	boss.open("boss.txt");
+	std::string linia;
+	char output[100];
+	int offset = 35;
+	int k = 10;
+	if (boss.is_open())
+	{
+		while (!boss.eof())
+		{
 
-	int getnstr(char *str, int n);
-
-	//while (std::getline(plik, wiersz))
-		mvprintw(przeciwnikY, przeciwnikX, "B");
-
+			boss >> linia;
+			mvprintw((y / 2) - k, offset, "%s", linia.c_str());
+			k--;
+		}
+	}
+	boss.close();
 }
+
 void wygrana() 
 {
 	if (iloscWrogow == 0)
 	{
+		//generujBossa();
 		mvprintw(15, 35, "WYGRANA !!!");
 		Sleep(30);
 		mvprintw(16, 35, "Wcisnij Q by wyjsc z gry.");
